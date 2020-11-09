@@ -1,4 +1,6 @@
 # shortes_path_finder
+## Quick start
+This repository contains a visualizer to show how different shortes path algorithms work.
 
 ## Project setup
 ```
