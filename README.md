@@ -3,8 +3,8 @@ This repository contains a visualizer to show how different shortest path algori
 
 ## Links and resources
 Demo: https://shortestpathfinder.netlify.app/  
-WIP documentation (german): https://docs.google.com/document/d/12ptPdEgjvkqVAWvBGMKVVdcjGeVcXVp8LwvjW3j4xoU
-WIP presentation (german): https://docs.google.com/presentation/d/1wVRnv0JVF5l8iiapsAXFLltiJ-y44Zkr-VhkGHUwFXQ
+WIP documentation (german): https://cutt.ly/jgZ68db   
+WIP presentation (german): https://cutt.ly/jgZ68db  
 
 ## Quick start
 To run the project locally you need to have npm and yarn installed.  
