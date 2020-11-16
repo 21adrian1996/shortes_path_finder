@@ -1,17 +1,19 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <ShortestPathHeader />
+    <ShortestPathDashboard />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import ShortestPathDashboard from '@/components/ShortestPathDashboard.vue'
+import ShortestPathHeader from '@/components/ShortestPathHeader.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    ShortestPathDashboard,
+    ShortestPathHeader
   }
 }
 </script>
