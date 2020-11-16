@@ -17,8 +17,8 @@
           <div v-for="row in grid.size_x" :key="row" class="h-10">
             <div v-for="column in grid.size_y" :key="column"
                  class="w-10 h-10 inline-block border-solid border-black p-2"
-                 v-bind:class="getAdditionalClasses(row, column)"
-                 v-on:click="placeElementOnMap(row, column)">
+                 :class="getAdditionalClasses(row, column)"
+                 @click="placeElementOnMap(row, column)">
               <div v-if="isStart(row, column)">
                 <i class="fas fa-street-view block"></i>
               </div>
@@ -36,14 +36,14 @@
 
 <script>
 import VueScreenSize from 'vue-screen-size';
-import ShortestPathSidebar from "@/components/ShortestPathSidebar";
+import ShortestPathSidebar from '@/components/ShortestPathSidebar';
 
 export default {
   name: 'ShortestPathDashboard',
   components: {ShortestPathSidebar},
   mixins: [VueScreenSize.VueScreenSizeMixin],
 
-  data: function () {
+  data () {
     return {
       grid: {},
       currentAlgorithm: 'Breadth-First-Search',
@@ -58,8 +58,10 @@ export default {
       return this.grid.end_x === x && this.grid.end_y === y;
     },
     isWall(x, y) {
-      let elementIndex = 'x:' + x.toString() + 'y:' + y.toString();
-      return this.grid.walls.includes(elementIndex);
+      return this.grid.walls.includes(this.arrayRepresentation(x,y));
+    },
+    arrayRepresentation(x, y){
+      return `x:${x.toString()}y:${y.toString()}`
     },
     placeElementOnMap(x, y) {
       if (this.currentElementToPlace === 'wall') {
@@ -105,12 +107,11 @@ export default {
         this.currentElementToPlace = 'end';
         return;
       }
-      let elementIndex = 'x:' + x.toString() + 'y:' + y.toString();
       if (this.isWall(x, y)) {
-        this.grid.walls.splice(this.grid.walls.indexOf(elementIndex), 1);
+        this.grid.walls.splice(this.grid.walls.indexOf(this.arrayRepresentation(x,y)), 1);
         return;
       }
-      this.grid.walls.push(elementIndex);
+      this.grid.walls.push(this.arrayRepresentation(x,y));
     },
     getAdditionalClasses(x, y) {
       let cssClass = 'border-l-2 border-t-2';

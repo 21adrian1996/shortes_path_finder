@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import ShortestPathDashboard from './components/ShortestPathDashboard.vue'
-import ShortestPathHeader from './components/ShortestPathHeader.vue'
+import ShortestPathDashboard from '@/components/ShortestPathDashboard.vue'
+import ShortestPathHeader from '@/components/ShortestPathHeader.vue'
 
 export default {
   name: 'App',

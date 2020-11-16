@@ -5,28 +5,28 @@
         <p class="text-gray-800 uppercase font-bold block py-1 px-4">Algorithmen</p>
         <ul class="block flex-wrap list-none pl-0 mb-0 mt-0">
           <li v-for="loopAlgorithm in algorithms" :key="loopAlgorithm"
-              v-on:click="algorithm = loopAlgorithm"
+              @click="algorithm = loopAlgorithm"
               class="cursor-pointer">
             <p class="block mb-2 mx-4 text-sm"
-               v-bind:class="getElementCssClass(loopAlgorithm)">{{ loopAlgorithm }}</p>
+               :class="getElementCssClass(loopAlgorithm)">{{ loopAlgorithm }}</p>
           </li>
         </ul>
         <p class="text-gray-800 uppercase font-bold block py-1 px-4 mt-8">Elemente</p>
         <ul class="block flex-wrap list-none pl-0 mb-0 mt-0">
-          <li v-on:click="changeCurrentElementToPlace('start')"
-              v-bind:class="getElementCssClass('start')"
+          <li @click="changeCurrentElementToPlace('start')"
+              :class="getElementCssClass('start')"
               class="cursor-pointer">
             <i class="fas fa-street-view"></i>
             <p class="block mb-2 mx-4 text-sm">Startpunkt</p>
           </li>
-          <li v-on:click="changeCurrentElementToPlace('end')"
-              v-bind:class="getElementCssClass('end')"
+          <li @click="changeCurrentElementToPlace('end')"
+              :class="getElementCssClass('end')"
               class="cursor-pointer">
             <i class="fas fa-flag-checkered"></i>
             <p class="block mb-2 mx-4 text-sm">Endpunkt</p>
           </li>
-          <li v-on:click="changeCurrentElementToPlace('wall')"
-              v-bind:class="getElementCssClass('wall')"
+          <li @click="changeCurrentElementToPlace('wall')"
+              :class="getElementCssClass('wall')"
               class="cursor-pointer">
             <i class="fas fa-stop"></i>
             <p class="block mb-2 mx-4 text-sm">Hindernis / Wand</p>
@@ -52,7 +52,7 @@ export default {
     currentElementToPlace: String,
 
   },
-  data: function () {
+  data () {
     return {
       algorithms: ['Breadth-First-Search', 'Dijkstra', 'A*'],
       elementToPlace: this.currentElementToPlace,
