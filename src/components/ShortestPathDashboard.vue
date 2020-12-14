@@ -4,6 +4,7 @@
       <ShortestPathSidebar
           :currentAlgorithm.sync="currentAlgorithm"
           :currentElementToPlace.sync="currentElementToPlace"
+          @calculate="calculatePath()"
       />
       <div class="w-full sm:w-9/12 lg:w-8/12 px-4 sm:pr-10 lg:pr-4">
         <div class="my-8">
@@ -19,10 +20,10 @@
                  class="w-10 h-10 inline-block border-solid border-black p-2"
                  :class="getAdditionalClasses(row, column)"
                  @click="placeElementOnMap(row, column)">
-              <div v-if="isStart(row, column)">
+              <div v-if="isStart(grid.start_x, grid.start_y, row, column)">
                 <i class="fas fa-street-view block"></i>
               </div>
-              <div v-if="isEnd(row, column)">
+              <div v-if="isEnd(grid.end_x, grid.end_y, row, column)">
                 <i class="fas fa-flag-checkered block"></i>
               </div>
             </div>
@@ -37,6 +38,8 @@
 <script>
 import VueScreenSize from 'vue-screen-size';
 import ShortestPathSidebar from '@/components/ShortestPathSidebar';
+import { breadthFirstSearch } from '@/algorithms/breadthFirstSearch'
+import { isStart, isEnd, isWall, arrayRepresentation } from '@/algorithms/helpers'
 
 export default {
   name: 'ShortestPathDashboard',
@@ -51,17 +54,11 @@ export default {
     }
   },
   methods: {
-    isStart(x, y) {
-      return this.grid.start_x === x && this.grid.start_y === y;
+    isStart(start_x, start_y, x, y) {
+      return isStart(start_x, start_y, x, y);
     },
-    isEnd(x, y) {
-      return this.grid.end_x === x && this.grid.end_y === y;
-    },
-    isWall(x, y) {
-      return this.grid.walls.includes(this.arrayRepresentation(x,y));
-    },
-    arrayRepresentation(x, y){
-      return `x:${x.toString()}y:${y.toString()}`
+    isEnd(start_x, start_y, x, y) {
+      return isEnd(start_x, start_y, x, y);
     },
     placeElementOnMap(x, y) {
       if (this.currentElementToPlace === 'wall') {
@@ -75,11 +72,11 @@ export default {
       }
     },
     setStartElement(x, y) {
-      if (this.isWall(x, y)) {
+      if (isWall(this.grid.walls, x, y)) {
         this.currentElementToPlace = 'wall';
         return;
       }
-      if (this.isEnd(x, y)) {
+      if (isEnd(this.grid.end_x, this.grid.end_y, x, y)) {
         this.currentElementToPlace = 'end';
         return;
       }
@@ -87,11 +84,11 @@ export default {
       this.grid.start_y = y;
     },
     setEndElement(x, y) {
-      if (this.isWall(x, y)) {
+      if (isWall(this.grid.walls, x, y)) {
         this.currentElementToPlace = 'wall';
         return;
       }
-      if (this.isStart(x, y)) {
+      if (isStart(this.grid.start_x, this.grid.end_x, x, y)) {
         this.currentElementToPlace = 'start';
         return;
       }
@@ -99,19 +96,19 @@ export default {
       this.grid.end_y = y;
     },
     changeWallStatus(x, y) {
-      if (this.isStart(x, y)) {
+      if (isStart(this.grid.start_x, this.grid.end_x, x, y)) {
         this.currentElementToPlace = 'start';
         return;
       }
-      if (this.isEnd(x, y)) {
+      if (isEnd(this.grid.end_x, this.grid.end_y, x, y)) {
         this.currentElementToPlace = 'end';
         return;
       }
-      if (this.isWall(x, y)) {
-        this.grid.walls.splice(this.grid.walls.indexOf(this.arrayRepresentation(x,y)), 1);
+      if (isWall(this.grid.walls, x, y)) {
+        this.grid.walls.splice(this.grid.walls.indexOf(arrayRepresentation(x,y)), 1);
         return;
       }
-      this.grid.walls.push(this.arrayRepresentation(x,y));
+      this.grid.walls.push(arrayRepresentation(x,y));
     },
     getAdditionalClasses(x, y) {
       let cssClass = 'border-l-2 border-t-2';
@@ -121,10 +118,15 @@ export default {
       if (y === this.grid.size_y) {
         cssClass += " border-r-2"
       }
-      if (this.isWall(x, y)) {
+      if (isWall(this.grid.walls, x, y)) {
         cssClass += ' wall'
       }
       return cssClass;
+    },
+    calculatePath() {
+      if (this.currentAlgorithm === 'Breadth-First-Search') {
+        breadthFirstSearch(this.grid);
+      }
     }
   },
   async mounted() {

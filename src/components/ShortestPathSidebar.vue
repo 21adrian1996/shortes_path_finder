@@ -35,7 +35,9 @@
         <button
             class="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3
             rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
-            type="button" style="transition: all .15s ease">
+            type="button" style="transition: all .15s ease"
+            @click="calculateShortestPath"
+        >
           <i class="fas fa-play"></i> Weg berechnen
         </button>
       </div>
@@ -68,6 +70,9 @@ export default {
         return 'text-orange-600';
       }
       return 'text-gray-600';
+    },
+    calculateShortestPath() {
+      this.$emit('calculate')
     },
   },
   watch: {
