@@ -1,13 +1,63 @@
 import { states, types } from "@/algorithms/constants";
+import { flatMap } from "lodash";
 
-export const findNeighbours = (grid, cell) => {
+function calculateBFS(grid) {
+  let queue = [];
+  let start = flatMap(grid).find((col) => col.type === types.start);
+  let end = flatMap(grid).find((col) => col.type === types.end);
+
+  queue.push(start);
+
+  while (queue.length) {
+    let currentCell = queue.shift();
+
+    // If the current location is the target cell
+    if (currentCell.y === end.y && currentCell.x === end.x) {
+      break;
+    }
+
+    // If not then we marke the current cell as visited
+    grid[currentCell.y - 1][currentCell.x - 1].state = states.visited;
+
+    // Check for neighbours
+    let neighbours = findNeighbours(grid, currentCell);
+
+    // Check if the neighbours were visitet and if not add them to the queue
+    neighbours.forEach((n) => {
+      if (n.state !== states.visited && n.state !== states.enqueued) {
+        // Set the parent on the neighbour children
+        n.parent = currentCell;
+        grid[n.y - 1][n.x - 1].state = states.enqueued;
+        queue.push(n);
+      }
+    });
+  }
+
+  let path = [];
+  let parent = end;
+
+  while (parent) {
+    path.push(parent);
+    parent = parent.parent;
+  }
+
+  path.reverse();
+
+  path.forEach((cell, index) => {
+    setTimeout(function () {
+      cell.state = states.shortest;
+    }, 200 * (index + 1));
+  });
+}
+
+function findNeighbours(grid, cell) {
   let neighbours = [];
 
   // Check if we have a neighbour to the left
   if (coordinateIsValid(grid, cell.x - 1, cell.y)) {
     neighbours.push(grid[cell.y - 1][cell.x - 2]);
   }
-  
+
   // Check if we have a neighbour to the right
   if (coordinateIsValid(grid, cell.x + 1, cell.y)) {
     neighbours.push(grid[cell.y - 1][cell.x]);
@@ -23,9 +73,8 @@ export const findNeighbours = (grid, cell) => {
     neighbours.push(grid[cell.y][cell.x - 1]);
   }
 
-  console.log("Neighbours to be added: ", neighbours);
   return neighbours;
-};
+}
 
 function coordinateIsValid(grid, x, y) {
   let rowCount = grid.length;
@@ -44,3 +93,4 @@ function coordinateIsValid(grid, x, y) {
 
   return true;
 }
+export { calculateBFS };

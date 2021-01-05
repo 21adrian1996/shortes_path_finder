@@ -1,21 +1,58 @@
 <template>
   <div id="app">
-    <ShortestPathHeader />
-    <ShortestPathDashboard />
+    <Header />
+    <div class="container mx-auto mt-4 pt-4">
+      <div class="flex flex-wrap">
+        <Navigation
+          :algorithm.sync="algorithm"
+          :element.sync="element"
+          @find="findPath()"
+        />
+        <Grid :grid.sync="grid" :element="element" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import ShortestPathDashboard from '@/components/ShortestPathDashboard.vue'
-import ShortestPathHeader from '@/components/ShortestPathHeader.vue'
+import Grid from "@/components/Grid.vue";
+import Header from "@/components/Header.vue";
+import Navigation from "@/components/Navigation";
+import { types, algorithms } from "@/algorithms/constants";
+import { calculateBFS } from "@/algorithms/breadthFirstSearch";
+// import { calculateDijkstra } from "@/algorithms/dijkstra";
+// import { calculateAstar } from "@/algorithms/astar";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    ShortestPathDashboard,
-    ShortestPathHeader
-  }
-}
+    Grid,
+    Header,
+    Navigation,
+  },
+  data() {
+    return {
+      grid: [],
+      element: types.start,
+      algorithm: algorithms.bfs,
+    };
+  },
+  methods: {
+    findPath() {
+      if (this.algorithm === algorithms.bfs) {
+        calculateBFS(this.grid);
+      }
+      if (this.algorithm === algorithms.dijkstra) {
+        // calculateDijkstra(this.grid);
+        console.log("Calculating Djikstra");
+      }
+      if (this.algorithm === algorithms.astar) {
+        // calculateAstar(this.grid)
+        console.log("Calculating A*");
+      }
+    },
+  },
+};
 </script>
 
 <style>

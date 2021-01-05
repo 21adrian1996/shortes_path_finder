@@ -11,3 +11,9 @@ export const types = {
     end: 'end',
     wall: 'wall'
 }
+
+export const algorithms = {
+    bfs: 'Breath-Frist-Search',
+    dijkstra: 'Dijkstra',
+    astar: 'A*',
+}
