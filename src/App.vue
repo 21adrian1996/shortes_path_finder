@@ -6,6 +6,8 @@
         <Navigation
           :algorithm.sync="algorithm"
           :element.sync="element"
+          :speed.sync="speed"
+          :allow-diagonal.sync="allowDiagonal"
           @find="findPath()"
         />
         <Grid
@@ -22,9 +24,9 @@
 import Grid from "@/components/Grid.vue";
 import Header from "@/components/Header.vue";
 import Navigation from "@/components/Navigation";
-import { types, algorithms } from "@/algorithms/constants";
+import { states, types, algorithms } from "@/algorithms/constants";
 import { calculateBFS } from "@/algorithms/breadthFirstSearch";
-// import { calculateDijkstra } from "@/algorithms/dijkstra";
+import { calculateDijkstra } from "@/algorithms/dijkstra";
 // import { calculateAstar } from "@/algorithms/astar";
 
 export default {
@@ -37,18 +39,28 @@ export default {
   data() {
     return {
       grid: [],
-      element: types.start,
-      algorithm: algorithms.bfs,
+      element: types.wall,
+      algorithm: algorithms.dijkstra,
+      speed: 100,
+      allowDiagonal: true
     };
   },
   methods: {
     findPath() {
+      // Make sure the gird is in its initial state
+      this.grid.forEach((row) => {
+        row.forEach((cell) => {
+           cell.state = states.unvisited
+           cell.parent = null
+           cell.distance = '∞'
+        })
+      })
+
       if (this.algorithm === algorithms.bfs) {
-        calculateBFS(this.grid);
+        calculateBFS(this.grid, this.allowDiagonal, this.speed);
       }
       if (this.algorithm === algorithms.dijkstra) {
-        // calculateDijkstra(this.grid);
-        console.log("Calculating Djikstra");
+        calculateDijkstra(this.grid, this.allowDiagonal, this.speed);
       }
       if (this.algorithm === algorithms.astar) {
         // calculateAstar(this.grid)

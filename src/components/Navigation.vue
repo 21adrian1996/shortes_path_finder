@@ -20,6 +20,8 @@
             </p>
           </li>
         </ul>
+        <hr class="border-gray-300 py-2" />
+
         <p class="text-gray-800 uppercase font-bold block py-1 px-4 mt-8">
           Elemente
         </p>
@@ -49,6 +51,38 @@
             <p class="block mb-2 mx-4 text-sm">Hindernis / Wand</p>
           </li>
         </ul>
+        <hr class="border-gray-300 py-2" />
+
+        <p class="text-gray-800 uppercase font-bold block py-1 px-4 mt-8">
+          Optionen
+        </p>
+        <ul class="block flex-wrap list-none pl-0 mb-8 mt-0">
+          <li class="cursor-pointer px-10 py-3">
+            <i class="fas fa-tachometer-alt"></i>
+            <p class="block mb-2 mx-4 text-sm">Geschwindigkeit</p>
+            <vue-slider v-model="localSpeed" />
+          </li>
+          <li class="cursor-pointer">
+            <i class="fas fa-route"></i>
+            <p class="block mb-2 mx-4 text-sm">Diagonale erlauben</p>
+            <div
+              class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
+            >
+              <input
+                v-model="localAllowDiagonal"
+                type="checkbox"
+                name="toggle"
+                id="toggle"
+                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+              />
+              <label
+                for="toggle"
+                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+              ></label>
+            </div>
+          </li>
+        </ul>
+        <hr class="border-gray-300 py-2" />
         <button
           class="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
           type="button"
@@ -63,26 +97,40 @@
 </template>
 
 <script>
+import VueSlider from "vue-slider-component";
+import "vue-slider-component/theme/antd.css";
 import { algorithms } from "@/algorithms/constants";
 
 export default {
   name: "Navigation",
-
+  components: {
+    VueSlider,
+  },
   props: {
-    algorithm: { 
-      type: String, 
-      required: true 
+    algorithm: {
+      type: String,
+      required: true,
     },
-    element: { 
-      type: String, 
-      required: true 
+    element: {
+      type: String,
+      required: true,
+    },
+    speed: {
+      type: Number,
+      required: true,
+    },
+    allowDiagonal: {
+      type: Boolean,
+      required: true,
     },
   },
   data() {
     return {
       algorithms: algorithms,
       localElement: this.element,
-      localAlgorithm: this.algorithm
+      localAlgorithm: this.algorithm,
+      localSpeed: this.speed,
+      localAllowDiagonal: this.allowDiagonal,
     };
   },
   methods: {
@@ -108,6 +156,16 @@ export default {
     localElement: {
       handler(newValue) {
         this.$emit("update:element", newValue);
+      },
+    },
+    localSpeed: {
+      handler(newValue) {
+        this.$emit("update:speed", newValue);
+      },
+    },
+    localAllowDiagonal: {
+      handler(newValue) {
+        this.$emit("update:allowDiagonal", newValue);
       },
     },
   },

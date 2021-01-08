@@ -12,7 +12,8 @@
     "lodash": "^4.17.20",
     "tailwindcss": "^1.9.6",
     "vue": "^2.6.11",
-    "vue-screen-size": "^1.0.1"
+    "vue-screen-size": "^1.0.1",
+    "vue-slider-component": "^3.2.11"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",

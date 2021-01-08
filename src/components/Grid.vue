@@ -10,20 +10,21 @@
         </p>
         <hr class="mt-6 mb-8 border-b-1 border-gray-300" />
       </div>
-      <div v-for="(row, index) in grid" :key="index" class="h-10">
+      <div v-for="(row, index) in grid" :key="index" class="flex justify-center">
         <div
           v-for="(column, index) in row"
           :key="index"
-          class="w-10 h-10 inline-block border-solid border-black border-r-2 border-b-2 p-2"
+          class="w-12 h-12 border-solid border-black border-r-2 border-b-2 flex justify-center items-center"
           :class="[column.type, column.state]"
           @click="placeElementOnMap(column)"
         >
           <div v-if="column.type === 'start'">
-            <i class="fas fa-street-view block"></i>
+            <i class="fas fa-street-view"></i>
           </div>
           <div v-if="column.type === 'end'">
-            <i class="fas fa-flag-checkered block"></i>
+            <i class="fas fa-flag-checkered"></i>
           </div>
+          <div v-if="column.type === 'free'" class="text-xs">{{ column.weight }}<br>{{ column.distance }}</div>
         </div>
       </div>
       <div class="mt-8">
@@ -126,6 +127,8 @@ export default {
           type: types.free,
           state: states.unvisited,
           parent: null,
+          distance: '∞', // Equivalent to infinity as the max grid sizes is 12x12 (144)
+          weight: Math.floor(Math.random() * 50) + 1
         });
       }
       this.grid.push(row);

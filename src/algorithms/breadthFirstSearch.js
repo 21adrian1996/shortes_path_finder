@@ -1,7 +1,9 @@
 import { states, types } from "@/algorithms/constants";
 import { flatMap } from "lodash";
 
-function calculateBFS(grid) {
+const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+
+async function calculateBFS(grid, allowDiagonal, speed) {
   let queue = [];
   let start = flatMap(grid).find((col) => col.type === types.start);
   let end = flatMap(grid).find((col) => col.type === types.end);
@@ -20,7 +22,7 @@ function calculateBFS(grid) {
     grid[currentCell.y - 1][currentCell.x - 1].state = states.visited;
 
     // Check for neighbours
-    let neighbours = findNeighbours(grid, currentCell);
+    let neighbours = findNeighbours(grid, currentCell, allowDiagonal);
 
     // Check if the neighbours were visitet and if not add them to the queue
     neighbours.forEach((n) => {
@@ -31,6 +33,7 @@ function calculateBFS(grid) {
         queue.push(n);
       }
     });
+    await timer(5 * (101 - speed));
   }
 
   let path = [];
@@ -46,11 +49,11 @@ function calculateBFS(grid) {
   path.forEach((cell, index) => {
     setTimeout(function () {
       cell.state = states.shortest;
-    }, 200 * (index + 1));
+    }, 5 * (101 - speed) * (index + 1));
   });
 }
 
-function findNeighbours(grid, cell) {
+function findNeighbours(grid, cell, allowDiagonal) {
   let neighbours = [];
 
   // Check if we have a neighbour to the left
@@ -71,6 +74,28 @@ function findNeighbours(grid, cell) {
   // Check if we have a neighbour to the bottom
   if (coordinateIsValid(grid, cell.x, cell.y + 1)) {
     neighbours.push(grid[cell.y][cell.x - 1]);
+  }
+
+  if (allowDiagonal) {
+    // check if we have a neighbour diagonal top right
+    if (coordinateIsValid(grid, cell.x + 1, cell.y - 1)) {
+      neighbours.push(grid[cell.y - 2][cell.x]);
+    }
+
+    // check if we have a neighbour diagonal top left
+    if (coordinateIsValid(grid, cell.x - 1, cell.y - 1)) {
+      neighbours.push(grid[cell.y - 2][cell.x - 2]);
+    }
+
+    // check if we have a neighbour diagonal bottom right
+    if (coordinateIsValid(grid, cell.x + 1, cell.y + 1)) {
+      neighbours.push(grid[cell.y][cell.x]);
+    }
+
+    // check if we have a neighbour diagonal bottom left
+    if (coordinateIsValid(grid, cell.x - 1, cell.y + 1)) {
+      neighbours.push(grid[cell.y][cell.x - 2]);
+    }
   }
 
   return neighbours;

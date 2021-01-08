@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.wall {
-  background: rgb(44,62,80);
-}
-
 .visited {
   background: rgb(6, 123, 240);
 }
@@ -16,4 +12,18 @@
 
 .shortest {
   background: rgb(45, 240, 6);
+}
+
+.wall {
+  background: rgb(44,62,80);
+}
+
+/* CHECKBOX TOGGLE SWITCH */
+/* @apply rules for documentation, these do not work as inline style */
+.toggle-checkbox:checked {
+  right: 0;
+  border-color: #dd6b20;
+}
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #dd6b20;
 }
