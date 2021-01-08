@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+.row:first-child .column {
+    border-top: 2px solid;
+}
+
+.column:first-child {
+    border-left: 2px solid;
+}
+
 .visited {
   background: rgb(6, 123, 240);
 }

@@ -1,5 +1,6 @@
 import { states, types } from "@/algorithms/constants";
 import { flatMap } from "lodash";
+import { printShortestPath } from "@/algorithms/helpers";
 
 const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -12,11 +13,6 @@ async function calculateBFS(grid, allowDiagonal, speed) {
 
   while (queue.length) {
     let currentCell = queue.shift();
-
-    // If the current location is the target cell
-    if (currentCell.y === end.y && currentCell.x === end.x) {
-      break;
-    }
 
     // If not then we marke the current cell as visited
     grid[currentCell.y - 1][currentCell.x - 1].state = states.visited;
@@ -33,24 +29,17 @@ async function calculateBFS(grid, allowDiagonal, speed) {
         queue.push(n);
       }
     });
+
+    // If the current location is the target cell, we are done
+    if(queue.find(n => n.y === end.y && n.x === end.x)) {
+      break;
+    }
+
     await timer(5 * (101 - speed));
   }
 
-  let path = [];
-  let parent = end;
+  return printShortestPath(end, speed);
 
-  while (parent) {
-    path.push(parent);
-    parent = parent.parent;
-  }
-
-  path.reverse();
-
-  path.forEach((cell, index) => {
-    setTimeout(function () {
-      cell.state = states.shortest;
-    }, 5 * (101 - speed) * (index + 1));
-  });
 }
 
 function findNeighbours(grid, cell, allowDiagonal) {

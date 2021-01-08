@@ -1,5 +1,6 @@
 import { states, types } from "@/algorithms/constants";
 import { flatMap, orderBy } from "lodash";
+import { printShortestPath } from "@/algorithms/helpers";
 
 const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -20,11 +21,6 @@ async function calculateDijkstra(grid, allowDiagonal, speed) {
 
     let currentCell = queue.shift();
 
-    // If the current location is the target cell
-    if (currentCell.y === end.y && currentCell.x === end.x) {
-      break;
-    }
-
     // If not then we marke the current cell as visited
     grid[currentCell.y - 1][currentCell.x - 1].state = states.visited;
 
@@ -36,33 +32,25 @@ async function calculateDijkstra(grid, allowDiagonal, speed) {
       let newDistance = currentCell.distance + n.weight;
       if (n.distance === '∞' || newDistance < n.distance) {
         n.parent = currentCell;
-        n.distance = newDistance
+        n.distance = newDistance;
       }
-      
+
       // Check if the neighbours were visitet and if not add them to the queue
       if (n.state !== states.visited && n.state !== states.enqueued) {
         grid[n.y - 1][n.x - 1].state = states.enqueued;
         queue.push(n);
       }
     });
+
+    // If the current location is the target cell, we are done
+    if(queue.find(n => n.y === end.y && n.x === end.x)) {
+      break;
+    }
+
     await timer(5 * (101 - speed));
   }
 
-  let path = [];
-  let parent = end;
-
-  while (parent) {
-    path.push(parent);
-    parent = parent.parent;
-  }
-
-  path.reverse();
-
-  path.forEach((cell, index) => {
-    setTimeout(function () {
-      cell.state = states.shortest;
-    }, 5 * (101 - speed) * (index + 1));
-  });
+  return printShortestPath(end, speed);
 }
 
 function findNeighbours(grid, cell, allowDiagonal) {

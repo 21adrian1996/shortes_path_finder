@@ -46,7 +46,7 @@ export default {
     };
   },
   methods: {
-    findPath() {
+    async findPath() {
       // Make sure the gird is in its initial state
       this.grid.forEach((row) => {
         row.forEach((cell) => {
@@ -55,16 +55,20 @@ export default {
            cell.distance = '∞'
         })
       })
-
+      let pathFound = false;
       if (this.algorithm === algorithms.bfs) {
-        calculateBFS(this.grid, this.allowDiagonal, this.speed);
+        pathFound = await calculateBFS(this.grid, this.allowDiagonal, this.speed);
       }
       if (this.algorithm === algorithms.dijkstra) {
-        calculateDijkstra(this.grid, this.allowDiagonal, this.speed);
+        pathFound = await calculateDijkstra(this.grid, this.allowDiagonal, this.speed);
       }
       if (this.algorithm === algorithms.astar) {
         // calculateAstar(this.grid)
         console.log("Calculating A*");
+      }
+
+      if(!pathFound) {
+        this.$alert('Es wurde kein passender Pfad gefunden.', '', 'warning');
       }
     },
   },
