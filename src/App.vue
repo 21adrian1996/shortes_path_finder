@@ -8,7 +8,11 @@
           :element.sync="element"
           @find="findPath()"
         />
-        <Grid :grid.sync="grid" :element="element" />
+        <Grid
+            :grid.sync="grid"
+            :element="element"
+            :algorithm="algorithm"
+        />
       </div>
     </div>
   </div>
