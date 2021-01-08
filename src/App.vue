@@ -27,7 +27,7 @@ import Navigation from "@/components/Navigation";
 import { states, types, algorithms } from "@/algorithms/constants";
 import { calculateBFS } from "@/algorithms/breadthFirstSearch";
 import { calculateDijkstra } from "@/algorithms/dijkstra";
-// import { calculateAstar } from "@/algorithms/astar";
+import { calculateAStar } from "@/algorithms/astar";
 
 export default {
   name: "App",
@@ -40,7 +40,7 @@ export default {
     return {
       grid: [],
       element: types.wall,
-      algorithm: algorithms.dijkstra,
+      algorithm: algorithms.bfs,
       speed: 100,
       allowDiagonal: true
     };
@@ -53,6 +53,8 @@ export default {
            cell.state = states.unvisited
            cell.parent = null
            cell.distance = '∞'
+           cell.heuristicDistance = '∞'
+           cell.completeDistance = '∞'
         })
       })
       let pathFound = false;
@@ -63,8 +65,7 @@ export default {
         pathFound = await calculateDijkstra(this.grid, this.allowDiagonal, this.speed);
       }
       if (this.algorithm === algorithms.astar) {
-        // calculateAstar(this.grid)
-        console.log("Calculating A*");
+        pathFound = await calculateAStar(this.grid, this.allowDiagonal, this.speed);
       }
 
       if(!pathFound) {

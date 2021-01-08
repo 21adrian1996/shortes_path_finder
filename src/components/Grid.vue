@@ -1,14 +1,28 @@
 <template>
   <div class="w-full sm:w-9/12 lg:w-8/12 px-4 sm:pr-10 lg:pr-4">
     <div class="mt-8">
-      <h1 class="font-semibold mt-8 mb-2 text-3xl">Shortest Path Finder</h1>
-      <p class="lead text-gray-600 text-l">
-        Platziere zuerst den Start und den Endpunkt, sowie beliebig viele
-        Hindernisse. Wähle anschliessend den gewünschten Algorithmus und
-        starte die Pfadsuche.
-      </p>
-      <hr class="mt-6 mb-8 border-b-1 border-gray-300" />
-    </div>
+        <h2 class="font-semibold mt-8 mb-2 text-3xl">Erläuterung zu {{ algorithm }}</h2>
+        <p v-if="this.isBFS()" class="text-gray-600 text-sm">
+          Bei der  Breitensuche werden alle Knoten eines Graphen der Breite nach besucht.
+          Gestartet wird beim Start-Element, von dort aus werden zunächst alle Nachbarn in eine Queue geschrieben, bevor es dann eine Ebene nach unten geht.
+          Die Knoten werden in der Reihenfolge besucht, in welcher Sie in der Queue sind und bis das Ziel gefunden wurde.
+        </p>
+        <p v-if="this.isAStar()" class="text-gray-600 text-sm">
+          Wie Djikstra, jedoch erhalten Knoten zusätzlich jeweils eine Schätzung der Kosten bis zum Ziel.
+          A* geht nun immer den Weg der geringsten Kosten, die sich aus den effektiven Kosten bis zum
+          jeweiligen Knoten und der heuristischen Schätzung der Kosten bis zum Ziel ergeben.
+          Die heuristische Funktion sollte nie einen grösseren Wert zurückgeben, als die Kosten zum Ziel effektiv sind.
+        </p>
+        <p v-if="this.isDijkstra()" class="text-gray-600 text-sm">
+          Bei Dijkstra wird zunächst jeder Knoten mit der Distanz unendlich initialisiert, die Kanten enthalten die Distanz zwischen den Knoten.
+          Der Startpunkt wird mit Distanz 0 initialisiert.
+          Nun wird der ‘unbesuchte’ Punkt mit der kleinsten Distanz ausgewählt.
+          Allen Nachbarn wird die Summe, aus der sie verbindenden Kante und der Distanz im Punkt, zugewiesen.
+          Der Punkt wird als ‘besucht’ markiert und der nächste ‘unbesuchte’ Punkt mit der kleinsten Distanz wird ausgewählt.
+          Das wird so lange gemacht, bis das Ziel gefunden wurde. So garantiert Dijkstra den schnellsten Weg zu finden.
+        </p>
+        <hr class="mt-6 mb-8 border-b-1 border-gray-300" />
+      </div>
     <div class="my-8">
       <div v-for="(row, index) in grid" :key="index" class="flex justify-center row">
         <div
@@ -27,34 +41,31 @@
           </div>
           <div v-if="column.type === 'free' && !isBFS()" class="text-xs">
             {{ column.weight }}<br>{{ column.distance }}
+            <span v-if="isAStar()">({{ column.heuristicDistance }})</span>
           </div>
         </div>
       </div>
-      <div class="mt-8">
-        <hr class="mt-6 mb-8 border-b-1 border-gray-300" />
-        <h2 class="font-semibold mt-8 mb-2 text-3xl">Erläuterung zu {{ algorithm }}</h2>
-        <p v-if="this.isBFS()" class="lead text-gray-600 text-l">
-          Bei der  Breitensuche (Breadth first search) werden alle Knoten in eine Baum oder Graphen der Breite nach besucht.
-          Gestartet wird beim Wurzel-Element, von dort aus werden zunächst alle Nachbarn besucht bevor es dann eine Ebene nach unten geht.
-          Um den Überblick zu behalten, wird zuerst das Wurzelelement und danach jeder besuchte Knoten zu einer first-in-first-out Queue hinzugefügt.
-          Anhand dieser Queue werden alle Knoten den Baumes abgearbeitet.
+      <hr class="mt-6 mb-8 border-b-1 border-gray-300" />
+      <h2 class="font-semibold mt-8 mb-2 text-3xl">Legende</h2>
+        <p class="text-gray-600 text-sm">Ein rot markiertes Feld wurde in die Liste der abzuarbeitenden Nachbaren/Felder eingetragen.<br>
+          Blau markierte Felder wurden besucht und wieder aus der Liste entfernt.<br>
+          Weisse Felder wurden nicht besucht.<br>
+          Die grünen Felder markieren den idealen Pfad.
         </p>
-        <p v-if="this.isAStar()" class="lead text-gray-600 text-l">
-          Bei A* wird der Raum in dem der Pfad gesucht wird in Knoten unterteilt, die jeweils über Kanten miteinander verbunden sind.
-          Die Knoten enthalten jeweils eine Schätzung der Kosten bis zum Ziel. Auf den Kanten befinden sich die effektiven Kosten von einem Knoten zum nächsten.
-          A* geht nun immer den Weg der geringsten Kosten, die sich aus den effektiven Kosten bis zum
-          jeweiligen Knoten und der heuristischen Schätzung der Kosten bis zum Ziel ergeben.
-          Wird das Ziel gefunden, aber die Kosten sind größer als  bei einem anderen Knoten plus die jeweilige Schätzung wird dieser auch noch geprüft. So wird sichergestellt dass immer der kürzeste Weg gefunden wird. Dieses Verhalten wird nachfolgend an einem Beispiel erklärt.
+        <p v-if="this.isDijkstra() || this.isAStar()" class="text-gray-600 mt-4 text-sm">
+          Die obere Zahl im Feld representiert jeweils das Gewicht aller Kanten die zu diesem Feld führen.<br>
+          Diese Gewichte sind also für alle Nachbaren identisch.<br>
+          Die Kosten werden jeweils zufällig generiert.
         </p>
-        <p v-if="this.isDijkstra()" class="lead text-gray-600 text-l">
-          Bei Dijkstra wird zunächst jeder Knoten mit der Distanz unendlich initialisiert, die Kanten enthalten die Distanz zwischen den Knoten.
-          Der Startpunkt wird mit Distanz 0 initialisiert.
-          Nun wird der ‘unbesuchte’ Punkt mit der kleinsten Distanz ausgewählt.
-          Allen Nachbarn wird die Summe, aus der sie verbindenden Kante und der Distanz im Punkt, zugewiesen.
-          Der Punkt wird als ‘besucht’ markiert und der nächste ‘unbesuchte’ Punkt mit der kleinsten Distanz wird ausgewählt.
-          Das wird so lange gemacht, bis das Ziel gefunden wurde. So garantiert Dijkstra den schnellsten Weg zu finden.
+        <p v-if="this.isDijkstra()" class="text-gray-600 mt-4 text-sm">
+          Die untere Zahl representiert die berechneten Kosten zur erreichung dieses Feldes.<br>
         </p>
-      </div>
+        <p v-if="this.isAStar()" class="text-gray-600 mt-4 text-sm">
+          Die untere Zahl representiert die berechneten Kosten zur erreichung dieses Feldes.<br>
+          Die Zahl in Klammern zeigt den heuristisch berechneten Wert an.<br>
+          Ist die Option "Diagonale erlauben" aktiviert handelt es sich dabei um die diagonale Distanz,
+          andernfalls wird die Manhattan Distanz als heuristische Funktion verwendet.
+        </p>
     </div>
   </div>
 </template>
@@ -131,7 +142,9 @@ export default {
           state: states.unvisited,
           parent: null,
           distance: '∞', // Equivalent to infinity as the max grid sizes is 12x12 (144)
-          weight: Math.floor(Math.random() * 50) + 1
+          heuristicDistance: '∞', // only used for A*
+          completeDistance: '∞', // only used for A*
+          weight: Math.floor(Math.random() * 21) + 1
         });
       }
       this.grid.push(row);

@@ -25,6 +25,10 @@
         <p class="text-gray-800 uppercase font-bold block py-1 px-4 mt-8">
           Elemente
         </p>
+        <p class="text-gray-600 text-sm">
+          Durch klicken auf das Element und danach auf das Feld im Grid kann das Element
+          plaziert werden. Es können beliebeig viele Wände plaziert werden.
+        </p>
         <ul class="block flex-wrap list-none pl-0 mb-0 mt-0">
           <li
             @click="changeCurrentElementToPlace('start')"
@@ -63,6 +67,9 @@
             <vue-slider v-model="localSpeed" />
           </li>
           <li class="cursor-pointer">
+            <p class="text-gray-600 text-sm">
+              Erlaubt neben links, recht, oben und unten auch die diagonalen Nachbarfelder.
+            </p>
             <i class="fas fa-route"></i>
             <p class="block mb-2 mx-4 text-sm">Diagonale erlauben</p>
             <div

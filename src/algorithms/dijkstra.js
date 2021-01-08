@@ -17,7 +17,7 @@ async function calculateDijkstra(grid, allowDiagonal, speed) {
 
   while (queue.length) {
     // Order queue by distance to get neares cell
-    orderBy(queue, ['distance'], ['asc'])
+    queue = orderBy(queue, ['distance'], ['asc'])
 
     let currentCell = queue.shift();
 
