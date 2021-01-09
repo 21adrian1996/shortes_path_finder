@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+.row:first-child .column {
+    border-top: 2px solid;
+}
+
+.column:first-child {
+    border-left: 2px solid;
+}
+
+.visited {
+  background: rgb(6, 123, 240);
+}
+
+.enqueued {
+  background: rgb(240, 80, 6);
+}
+
+.shortest {
+  background: rgb(45, 240, 6);
+}
+
 .wall {
   background: rgb(44,62,80);
+}
+
+/* CHECKBOX TOGGLE SWITCH */
+/* @apply rules for documentation, these do not work as inline style */
+.toggle-checkbox:checked {
+  right: 0;
+  border-color: #dd6b20;
+}
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #dd6b20;
 }

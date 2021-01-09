@@ -27,6 +27,6 @@
 
 <script>
 export default {
-  name: "ShortestPathDashboard"
+  name: "Header"
 }
 </script>
